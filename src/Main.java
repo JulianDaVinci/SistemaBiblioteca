@@ -10,7 +10,7 @@ public class Main {
         }
         Usuario usuario = new Usuario("Juan Pérez", 123456782, "juan.perez@example.com");
 
-        // Insertar el usuarisso en la base de datos
+        // Insertar el usuarisso en la base aade datos
         usuario.crearUsuario();
 
         // Imprimir los detalles del usuario
