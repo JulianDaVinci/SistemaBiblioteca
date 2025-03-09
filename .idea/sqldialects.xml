@@ -3,5 +3,7 @@
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/src/BaseDeDatos.java" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/SQLBiblioteca.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/src/Usuario.java" dialect="GenericSQL" />
+    <file url="PROJECT" dialect="MySQL" />
   </component>
 </project>
