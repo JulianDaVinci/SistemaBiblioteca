@@ -33,23 +33,23 @@ public class BaseDeDatos {
 
         String sqlLibro = "" +
                 "CREATE TABLE IF NOT EXISTS `libro` (\n" +
-                "`idlibro` INT NOT NULL AUTO_INCREMENT,\n" +
+                "`idLibro` INT NOT NULL AUTO_INCREMENT,\n" +
                 "`nombre` VARCHAR(150) NULL,\n" +
                 "`autor` VARCHAR(150) NULL,\n" +
                 "`categoria` VARCHAR(150) NULL,\n" +
                 "`disponible` TINYINT NULL,\n" +
-                "PRIMARY KEY (`idlibro`)) ENGINE = InnoDB;";
+                "PRIMARY KEY (`idLibro`)) ENGINE = InnoDB;";
 
         String sqlPrestamo = "" +
                 "CREATE TABLE IF NOT EXISTS `usuario_prestamo` (\n" +
                 "`idPrestamo` INT NOT NULL AUTO_INCREMENT,\n" +
                 "`idusuario` INT NOT NULL,\n" +
-                "`idlibro` INT NOT NULL,\n" +
+                "`idLibro` INT NOT NULL,\n" +
                 "`fechaPrestamo` DATE NULL,\n" +
-                "`fechaDevolucion` VARCHAR(45) NULL,\n" +
-                "PRIMARY KEY (`idPrestamo`, `idusuario`, `idlibro`),\n" +
+                "`fechaDevolucion` DATE NULL,\n" +
+                "PRIMARY KEY (`idPrestamo`, `idusuario`, `idLibro`),\n" +
                 "FOREIGN KEY (`idusuario`) REFERENCES `usuario` (`idusuario`),\n" +
-                "FOREIGN KEY (`idlibro`) REFERENCES `libro` (`idlibro`));";
+                "FOREIGN KEY (`idLibro`) REFERENCES `libro` (`idLibro`));";
 
         stmt.executeUpdate(sqlUsuario);
         stmt.executeUpdate(sqlLibro);

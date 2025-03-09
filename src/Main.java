@@ -1,25 +1,31 @@
+import reportes.Reporte;
+import reportes.LibrosPrestados;
+import reportes.BusquedaLibro;
+import reportes.LibrosMasPrestados;
+import reportes.ReporteCompuesto;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
-        // Obtener la conexión a la base de datos
+        // Obtener la conexión a la base de datos (asumiendo que ya tienes una clase ConexionBD)
         Connection conn = ConexionBD.obtenerConexion();
 
-        // Crear un nuevo usuario
-        Usuario usuario = new Usuario("Juan Pérez", 123456782, "juan.perez@example.com");
-        usuario.crearUsuario(conn);  // Crear usuario en la base de datos, pasando la conexión
+        // Crear el reporte de búsqueda de libros
+        BusquedaLibro reporteBusqueda = new BusquedaLibro("pepito");
 
-        // Imprimir los detalles del usuario
-        System.out.println(usuario);
-
-        // Crear un nuevo libro
-        Libro libro = new Libro("El señor de los anillos", "J.R.R. Tolkien", "Fantasía", true);
-        libro.crearLibro(conn);  // Crear libro en la base de datos, pasando la conexión
-
-        // Imprimir los detalles del libro
-        System.out.println(libro);
+        // Generar el reporte de libros que coincidan con "pepito"
+        reporteBusqueda.generarReporte(conn);
 
         // Cerrar la conexión (si es necesario)
+        try {
+            if (conn != null && !conn.isClosed()) {
+                conn.close();  // Cerrar la conexión al final
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error al cerrar la conexión.");
+        }
     }
 }

@@ -34,12 +34,12 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `SistemaBiblioteca`.`libro` ;
 
 CREATE TABLE IF NOT EXISTS `SistemaBiblioteca`.`libro` (
-  `idlibro` INT NOT NULL AUTO_INCREMENT,
+  `idLibro` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(150) NULL,
   `autor` VARCHAR(150) NULL,
   `categoria` VARCHAR(150) NULL,
   `disponible` TINYINT NULL,
-  PRIMARY KEY (`idlibro`))
+  PRIMARY KEY (`idLibro`))
 ENGINE = InnoDB;
 
 
@@ -51,11 +51,11 @@ DROP TABLE IF EXISTS `SistemaBiblioteca`.`usuario_prestamo` ;
 CREATE TABLE IF NOT EXISTS `SistemaBiblioteca`.`usuario_prestamo` (
   `idPrestamo` INT NOT NULL AUTO_INCREMENT,
   `idusuario` INT NOT NULL,
-  `idlibro` INT NOT NULL,
+  `idLibro` INT NOT NULL,
   `fechaPrestamo` DATE NULL,
-  `fechaDevolucion` VARCHAR(45) NULL,
-  PRIMARY KEY (`idPrestamo`, `idusuario`, `idlibro`),
-  INDEX `fk_usuario_has_libro_libro1_idx` (`idlibro` ASC) VISIBLE,
+  `fechaDevolucion` DATE NULL,
+  PRIMARY KEY (`idPrestamo`, `idusuario`, `idLibro`),
+  INDEX `fk_usuario_has_libro_libro1_idx` (`idLibro` ASC) VISIBLE,
   INDEX `fk_usuario_has_libro_usuario_idx` (`idusuario` ASC) VISIBLE,
   CONSTRAINT `fk_usuario_has_libro_usuario`
     FOREIGN KEY (`idusuario`)
@@ -63,8 +63,8 @@ CREATE TABLE IF NOT EXISTS `SistemaBiblioteca`.`usuario_prestamo` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_usuario_has_libro_libro1`
-    FOREIGN KEY (`idlibro`)
-    REFERENCES `SistemaBiblioteca`.`libro` (`idlibro`)
+    FOREIGN KEY (`idLibro`)
+    REFERENCES `SistemaBiblioteca`.`libro` (`idLibro`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
