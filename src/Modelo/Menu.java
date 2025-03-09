@@ -133,10 +133,4 @@ public class Menu extends JFrame {
             }
         }
     }
-
-    public static void main(String[] args) {
-        Menu menu = new Menu();
-        menu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        menu.setVisible(true);
-    }
 }
