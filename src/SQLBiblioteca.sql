@@ -20,11 +20,11 @@ USE `SistemaBiblioteca` ;
 DROP TABLE IF EXISTS `SistemaBiblioteca`.`usuario` ;
 
 CREATE TABLE IF NOT EXISTS `SistemaBiblioteca`.`usuario` (
-  `idusuario` INT NOT NULL AUTO_INCREMENT,
+  `idUsuario` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(150) NULL,
   `dni` INT NULL,
   `email` VARCHAR(255) NULL,
-  PRIMARY KEY (`idusuario`))
+  PRIMARY KEY (`idUsuario`))
 ENGINE = InnoDB;
 
 
@@ -50,16 +50,16 @@ DROP TABLE IF EXISTS `SistemaBiblioteca`.`usuario_prestamo` ;
 
 CREATE TABLE IF NOT EXISTS `SistemaBiblioteca`.`usuario_prestamo` (
   `idPrestamo` INT NOT NULL AUTO_INCREMENT,
-  `idusuario` INT NOT NULL,
+  `idUsuario` INT NOT NULL,
   `idLibro` INT NOT NULL,
   `fechaPrestamo` DATE NULL,
   `fechaDevolucion` DATE NULL,
-  PRIMARY KEY (`idPrestamo`, `idusuario`, `idLibro`),
+  PRIMARY KEY (`idPrestamo`, `idUsuario`, `idLibro`),
   INDEX `fk_usuario_has_libro_libro1_idx` (`idLibro` ASC) VISIBLE,
-  INDEX `fk_usuario_has_libro_usuario_idx` (`idusuario` ASC) VISIBLE,
+  INDEX `fk_usuario_has_libro_usuario_idx` (`idUsuario` ASC) VISIBLE,
   CONSTRAINT `fk_usuario_has_libro_usuario`
-    FOREIGN KEY (`idusuario`)
-    REFERENCES `SistemaBiblioteca`.`usuario` (`idusuario`)
+    FOREIGN KEY (`idUsuario`)
+    REFERENCES `SistemaBiblioteca`.`usuario` (`idUsuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_usuario_has_libro_libro1`

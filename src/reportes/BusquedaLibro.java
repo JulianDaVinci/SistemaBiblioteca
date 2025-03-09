@@ -1,9 +1,10 @@
 package reportes;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BusquedaLibro implements Reporte {
     private String nombreLibro;
@@ -13,42 +14,58 @@ public class BusquedaLibro implements Reporte {
     }
 
     @Override
-    public void generarReporte(Connection conn) {
-        // Consulta para buscar libros con nombre similar al proporcionado
-        String sql = "SELECT l.idLibro, l.nombre, l.autor, l.categoria, l.disponible " +
-                "FROM libro l " +
-                "WHERE l.nombre LIKE CONCAT('%', ?, '%')";
+    public String generarReporte(Connection conn) {
+        List<String> resultados = buscarLibros(conn);
+        return mostrarResultados(resultados);
+    }
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, nombreLibro);
-            ResultSet rs = stmt.executeQuery();
+    public List<String> buscarLibros(Connection conn) {
+        List<String> resultados = new ArrayList<>();
+        String sqlLibro = "SELECT idLibro, nombre, autor, categoria, disponible FROM libro WHERE nombre LIKE ?";
+        String sqlUsuario = "SELECT u.dni FROM usuario_prestamo up JOIN usuario u ON up.idUsuario = u.idUsuario WHERE up.idLibro = ? ORDER BY up.idPrestamo DESC LIMIT 1";
 
-            boolean found = false;
+        try (PreparedStatement stmtLibro = conn.prepareStatement(sqlLibro)) {
+            stmtLibro.setString(1, "%" + nombreLibro + "%");
+            ResultSet rsLibro = stmtLibro.executeQuery();
 
-            while (rs.next()) {
-                int idLibro = rs.getInt("idLibro");
-                String nombre = rs.getString("nombre");
-                String autor = rs.getString("autor");
-                String categoria = rs.getString("categoria");
-                boolean disponible = rs.getBoolean("disponible");
+            while (rsLibro.next()) {
+                int idLibro = rsLibro.getInt("idLibro");
+                String nombre = rsLibro.getString("nombre");
+                String autor = rsLibro.getString("autor");
+                String categoria = rsLibro.getString("categoria");
+                boolean disponible = rsLibro.getBoolean("disponible");
 
-                found = true;
+                StringBuilder resultado = new StringBuilder(String.format("Libro: %s\nAutor: %s\nCategoría: %s\nID: %d\nDisponible: %s\n",
+                        nombre, autor, categoria, idLibro, disponible ? "Sí" : "No"));
 
-                System.out.println("Libro: " + nombre);
-                System.out.println("Autor: " + autor);
-                System.out.println("Categoría: " + categoria);
-                System.out.println("ID: " + idLibro);
-                System.out.println("Disponible: " + (disponible ? "Sí" : "No"));
-                System.out.println("---------------------------------------------------");
+                try (PreparedStatement stmtUsuario = conn.prepareStatement(sqlUsuario)) {
+                    stmtUsuario.setInt(1, idLibro);
+                    ResultSet rsUsuario = stmtUsuario.executeQuery();
+                    if (rsUsuario.next()) {
+                        int dniUsuario = rsUsuario.getInt("dni");
+                        resultado.append(String.format("DNI del último solicitante: %d\n", dniUsuario));
+                    }
+                }
+
+                resultados.add(resultado.toString());
             }
 
-            if (!found) {
-                System.out.println("No se encontraron libros con el nombre: " + nombreLibro);
+            if (resultados.isEmpty()) {
+                resultados.add("No se encontraron libros con el nombre: " + nombreLibro);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Error al generar el reporte.");
+            resultados.add("Error al buscar libros: " + e.getMessage());
         }
+        return resultados;
+    }
+
+    public String mostrarResultados(List<String> resultados) {
+        StringBuilder reporte = new StringBuilder();
+        for (String resultado : resultados) {
+            reporte.append(resultado).append("\n");
+        }
+        return reporte.toString();
     }
 }

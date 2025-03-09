@@ -1,5 +1,4 @@
 package reportes;
-
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,14 +10,12 @@ public class ReporteCompuesto implements Reporte {
         reportes.add(reporte);
     }
 
-    public void eliminarReporte(Reporte reporte) {
-        reportes.remove(reporte);
-    }
-
     @Override
-    public void generarReporte(Connection conn) {
+    public String generarReporte(Connection conn) {
+        StringBuilder reporteCompleto = new StringBuilder();
         for (Reporte reporte : reportes) {
-            reporte.generarReporte(conn);
+            reporteCompleto.append(reporte.generarReporte(conn)).append("\n");
         }
+        return reporteCompleto.toString();
     }
 }

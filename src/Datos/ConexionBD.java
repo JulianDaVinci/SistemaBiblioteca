@@ -1,3 +1,5 @@
+package Datos;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -10,7 +12,7 @@ public class ConexionBD {
 
     private static Connection conexion;
 
-    public static Connection obtenerConexion() throws SQLException {
+    public static Connection getConnection() throws SQLException {
         if (conexion == null) {
             conexion = DriverManager.getConnection(URL, USER, PASSWORD);
         }

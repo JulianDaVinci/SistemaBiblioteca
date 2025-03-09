@@ -1,45 +1,59 @@
 package reportes;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class LibroEstado {
+public class LibroEstado implements Reporte {
     private int idLibro;
 
     public LibroEstado(int idLibro) {
         this.idLibro = idLibro;
     }
 
-    public void generarReporte(Connection conn) {
-        String sql = "SELECT u.nombre, u.dni, up.fechaPrestamo, up.fechaDevolucion " +
+    @Override
+    public String generarReporte(Connection conn) {
+        return obtenerEstado(conn);
+    }
+
+    public String obtenerEstado(Connection conn) {
+        StringBuilder estado = new StringBuilder();
+        String sqlLibro = "SELECT nombre, disponible FROM libro WHERE idLibro = ?";
+        String sqlPrestamo = "SELECT u.nombre, up.fechaPrestamo, up.fechaDevolucion " +
                 "FROM usuario_prestamo up " +
-                "JOIN usuario u ON up.idusuario = u.id " +
+                "JOIN usuario u ON up.idUsuario = u.idUsuario " +
                 "WHERE up.idLibro = ?";
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, idLibro);  // Establecemos el id del libro que queremos buscar
-            ResultSet rs = stmt.executeQuery();
+        try (PreparedStatement pstmtLibro = conn.prepareStatement(sqlLibro);
+             PreparedStatement pstmtPrestamo = conn.prepareStatement(sqlPrestamo)) {
 
-            if (rs.next()) {
-                String nombreUsuario = rs.getString("nombre");
-                String dniUsuario = rs.getString("dni");
-                java.sql.Date fechaPrestamo = rs.getDate("fechaPrestamo");
-                java.sql.Date fechaDevolucion = rs.getDate("fechaDevolucion");
+            pstmtLibro.setInt(1, idLibro);
+            ResultSet rsLibro = pstmtLibro.executeQuery();
+            if (rsLibro.next()) {
+                String nombreLibro = rsLibro.getString("nombre");
+                boolean disponible = rsLibro.getBoolean("disponible");
+                estado.append("Libro: ").append(nombreLibro).append("\nDisponible: ").append(disponible ? "Sí" : "No").append("\n");
 
-                System.out.println("📚 Detalles del libro con ID: " + idLibro);
-                System.out.println("Usuario que tiene el libro: " + nombreUsuario);
-                System.out.println("DNI: " + dniUsuario);
-                System.out.println("Fecha de préstamo: " + fechaPrestamo);
-                System.out.println("Fecha de devolución: " + fechaDevolucion);
+                if (!disponible) {
+                    pstmtPrestamo.setInt(1, idLibro);
+                    ResultSet rsPrestamo = pstmtPrestamo.executeQuery();
+                    if (rsPrestamo.next()) {
+                        String nombreUsuario = rsPrestamo.getString("nombre");
+                        String fechaPrestamo = rsPrestamo.getString("fechaPrestamo");
+                        String fechaDevolucion = rsPrestamo.getString("fechaDevolucion");
+                        estado.append("Prestado a: ").append(nombreUsuario)
+                                .append("\nFecha de Préstamo: ").append(fechaPrestamo)
+                                .append("\nFecha de Devolución: ").append(fechaDevolucion).append("\n");
+                    }
+                }
             } else {
-                System.out.println("No se encontró ningún préstamo para el libro con ID: " + idLibro);
+                estado.append("No se encontró un libro con el ID proporcionado.");
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Error al generar el reporte de estado del libro.");
+            return "Error al obtener el estado del libro: " + e.getMessage();
         }
+
+        return estado.toString();
     }
 }
