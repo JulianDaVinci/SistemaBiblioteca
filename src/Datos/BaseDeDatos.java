@@ -17,7 +17,7 @@ public class BaseDeDatos {
 
         String createDBSQL = "CREATE DATABASE IF NOT EXISTS " + DB_NAME;
         stmt.executeUpdate(createDBSQL);
-        System.out.println("Base de datos '" + DB_NAME + "' creada.");
+      //  System.out.println("Base de datos '" + DB_NAME + "' creada.");
 
         conn.close();
 
@@ -63,11 +63,10 @@ public class BaseDeDatos {
         stmt.executeUpdate(sqlLibro);
         stmt.executeUpdate(sqlPrestamo);
 
-        System.out.println("Tablas creadas.");
+       // System.out.println("Tablas creadas.");
     }
 
     private static void insertarDatosSiVacio(Statement stmt) throws SQLException {
-        // Check if tables are empty
         String checkUsuario = "SELECT COUNT(*) AS count FROM usuario";
         ResultSet rsUsuario = stmt.executeQuery(checkUsuario);
         rsUsuario.next();
@@ -104,10 +103,10 @@ public class BaseDeDatos {
 
             String insertPrestamos = "INSERT INTO usuario_prestamo (idUsuario, idLibro, fechaPrestamo, fechaDevolucion) VALUES\n";
             for (int i = 1; i <= 100; i++) {
-                int usuarioId = (int) (Math.random() * 20) + 1; // Usuario aleatorio entre 1 y 20
-                int libroId = (int) (Math.random() * 50) + 1;  // Libro aleatorio entre 1 y 50
-                String fechaPrestamo = String.format("2025-03-%02d", (int) (Math.random() * 28) + 1); // Fecha aleatoria en marzo de 2025
-                String fechaDevolucion = String.format("2025-03-%02d", (int) (Math.random() * 28) + 1); // Fecha aleatoria en marzo de 2025
+                int usuarioId = (int) (Math.random() * 20) + 1;
+                int libroId = (int) (Math.random() * 50) + 1;
+                String fechaPrestamo = String.format("2025-03-%02d", (int) (Math.random() * 28) + 1);
+                String fechaDevolucion = String.format("2025-03-%02d", (int) (Math.random() * 28) + 1);
 
                 insertPrestamos += String.format("(%d, %d, '%s', '%s')", usuarioId, libroId, fechaPrestamo, fechaDevolucion);
                 if (i != 100) {
@@ -115,10 +114,7 @@ public class BaseDeDatos {
                 }
             }
             stmt.executeUpdate(insertPrestamos);
-
-            System.out.println("Datos insertados.");
-        } else {
-            System.out.println("Los datos ya existen, no se insertaron nuevos datos.");
+           // System.out.println("Datos insertados.");
         }
     }
 }

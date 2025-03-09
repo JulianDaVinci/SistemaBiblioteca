@@ -40,8 +40,8 @@ public class MarcarDevolucionDialog extends JDialog {
         try {
             int dni = Integer.parseInt(campoDni.getText());
             int idLibro = Integer.parseInt(campoIdLibro.getText());
-            System.out.println("DNI: " + dni);
-            System.out.println("ID Libro: " + idLibro);
+            //System.out.println("DNI: " + dni);
+            //System.out.println("ID Libro: " + idLibro);
 
             if (marcarDevolucionEnBaseDeDatos(dni, idLibro)) {
                 JOptionPane.showMessageDialog(this, "Devolución marcada.");
@@ -76,7 +76,7 @@ public class MarcarDevolucionDialog extends JDialog {
                 return false;
             }
             int idUsuario = rsIdUsuario.getInt("idUsuario");
-            System.out.println("ID Usuario: " + idUsuario);
+            //System.out.println("ID Usuario: " + idUsuario);
 
             // Verificamos si el libro ya está disponible
             stmtVerificarDisponibilidadLibro.setInt(1, idLibro);
